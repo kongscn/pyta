@@ -135,26 +135,26 @@ class MACD(Strategy):
     #
     #     text_size = 9
     #     left, width = 0.1, 0.8
-    # rect_price = [left, 0.5, width, 0.4]  #left, bottom, width, height
+    #     rect_price = [left, 0.5, width, 0.4]  #left, bottom, width, height
     #     rect_volume = [left, 0.3, width, 0.2]
     #     rect_macd = [left, 0.1, width, 0.2]
     #
     #     fig = plt.figure(facecolor='white')
-    # axes_color = '#f6f6f6'  # the axes background color
+    #     axes_color = '#f6f6f6'  # the axes background color
     #
     #     ax_price = fig.add_axes(rect_price, axisbg=axes_color)
     #     ax_volume = fig.add_axes(rect_volume, axisbg=axes_color, sharex=ax_price)
     #     ax_macd = fig.add_axes(rect_macd, axisbg=axes_color, sharex=ax_price)
     #
-    # formatter for prices
+    #     # formatter for prices
     #     def to_percent(y, position):
-    # Ignore the passed in position. This has the effect of scaling the default
-    # tick locations.
+    #         # Ignore the passed in position. This has the effect of scaling the default
+    #         # tick locations.
     #         if len(self.products) == 1:
     #             return y
     #         s = str(100 * y)
     #
-    # The percent symbol needs escaping in latex
+    #         # The percent symbol needs escaping in latex
     #         if matplotlib.rcParams['text.usetex'] == True:
     #             return s + r'$\%$'
     #         else:
@@ -162,19 +162,19 @@ class MACD(Strategy):
     #
     #     formatter = mticker.FuncFormatter(to_percent)
     #
-    # plot the price and volume data: Open, High, Low, Close
-    # use open, high, low, close. adjust in product class before strategy back testing.
-    # currently it's only a vertical line that indicates the open and close price
-    # todo: add ohlc and candle chart type.
-    # dx = product.adj_close - product.close
+    #     ### plot the price and volume data: Open, High, Low, Close
+    #     # use open, high, low, close. adjust in product class before strategy back testing.
+    #     # currently it's only a vertical line that indicates the open and close price
+    #     # todo: add ohlc and candle chart type.
+    #     # dx = product.adj_close - product.close
     #
-    # if there're more than one product, convert prices to percent
+    #     # if there're more than one product, convert prices to percent
     #     if len(self.products) > 1:
     #         for p in self.products:
     #             p.convert_to_percent()
     #
     #
-    # plot the main product.
+    #     # plot the main product.
     #     product = self.products[0]
     #     ax_price.set_title('%s' % product.code)
     #     open_p = product.open
@@ -185,7 +185,7 @@ class MACD(Strategy):
     #     ax_price.vlines(product.date[up], open_p[up], close_p[up], color='green', label='_nolegend_')
     #     ax_price.vlines(product.date[~up], open_p[~up], close_p[~up], color='red', label='_nolegend_')
     #
-    # plot MA only if no products to compare
+    #     # plot MA only if no products to compare
     #     if len(self.products) == 1:
     #         ax_price.plot(self.result[0], self.result[1], color='blue', lw=2, label='MA (%d)' % self.nfast)
     #         ax_price.plot(self.result[0], self.result[2], color='red', lw=2, label='MA (%d)' % self.nslow)
@@ -199,30 +199,29 @@ class MACD(Strategy):
     #         last.close - last.open )
     #     t4 = ax_price.text(0.3, 0.9, s, transform=ax_price.transAxes, fontsize=text_size)
     #
-    # print the compare products
+    #     # print the compare products
     #     for p in self.products[1:]:
     #         ax_price.plot(p.date, p.close, color=colors.pop(), lw=1, label=p.code)
     #
-    # ax_price.set_yscale('log')
+    #     #ax_price.set_yscale('log')
     #     ax_price.yaxis.set_major_formatter(formatter)
     #
     #
-    # legend
+    #     # legend
     #     props = font_manager.FontProperties(size=10)
     #     leg = ax_price.legend(loc='center left', shadow=True, fancybox=True, prop=props)
     #     leg.get_frame().set_alpha(0.5)
     #
-    # volume = (product.close * product.volume) / 1e6  # dollar volume in millions
-    # vmax = volume.max()
+    #     # volume = (product.close * product.volume) / 1e6  # dollar volume in millions
+    #     # vmax = volume.max()
     #     volume = product.volume
     #
     #     fillcolor = 'darkgoldenrod'
-    #     poly = ax_volume.fill_between(product.date, volume, 0, label='Volume', facecolor=fillcolor,
-    # edgecolor=fillcolor)
+    #     poly = ax_volume.fill_between(product.date, volume, 0, label='Volume', facecolor=fillcolor, edgecolor=fillcolor)
     #     ax_volume.set_ylim(0, volume.max())
     #     ax_volume.set_yticks([])
     #
-    # compute the MACD indicator
+    #     ### compute the MACD indicator
     #     fillcolor = 'darkslategrey'
     #
     #     macd = self.result[3]
@@ -232,7 +231,7 @@ class MACD(Strategy):
     #     ax_macd.fill_between(product.date, macd - ema, 0, alpha=0.5, facecolor=fillcolor, edgecolor=fillcolor)
     #
     #     ax_macd.text(0.025, 0.95, 'MACD (%d, %d, %d)' % (self.nfast, self.nslow, self.nmacd), va='top',
-    #                  transform=ax_macd.transAxes, fontsize=text_size)
+    #         transform=ax_macd.transAxes, fontsize=text_size)
     #
     #     for ax in ax_price, ax_volume, ax_macd:
     #         if ax != ax_macd:
@@ -252,15 +251,15 @@ class MACD(Strategy):
     #         def __call__(self, *args, **kwargs):
     #             return mticker.MaxNLocator.__call__(self, *args, **kwargs)
     #
-    # at most 5 ticks, pruning the upper and lower so they don't overlap
-    # with other ticks
-    # ax_macd.yaxis.set_major_locator(mticker.MaxNLocator(5, prune='both'))
-    # ax3.yaxis.set_major_locator(mticker.MaxNLocator(5, prune='both'))
+    #     # at most 5 ticks, pruning the upper and lower so they don't overlap
+    #     # with other ticks
+    #     #ax_macd.yaxis.set_major_locator(mticker.MaxNLocator(5, prune='both'))
+    #     #ax3.yaxis.set_major_locator(mticker.MaxNLocator(5, prune='both'))
     #
     #     ax_price.yaxis.set_major_locator(MyLocator(5, prune='both'))
     #     ax_macd.yaxis.set_major_locator(MyLocator(5, prune='both'))
     #
-    # fig.savefig(path.join(CONFIG['temp_p'], 'macd.pdf'))
+    #     # fig.savefig(path.join(CONFIG['temp_p'], 'macd.pdf'))
     #     plt.show(block=True)
 
     def apply(self):
