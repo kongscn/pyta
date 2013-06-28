@@ -63,16 +63,27 @@ class MACD(Strategy):
         self.nmacd = cdma
         self.column = column
         self.verbose = verbose
-        self.product=None
+        self._product=None
+        self.prices=None
 
         Strategy.__init__(self)
 
+    @property
+    def product(self):
+        return self._product
+
+    @product.setter
+    def product(self, p):
+        self._product = p
+        self.prices=p[self.column]
 
     def analyze(self):
 
         init_asset = 1000
-
-        prices = self.product[self.column]
+        # if self.prices is None:
+        #     prices = self.product[self.column]
+        # else:
+        prices = self.prices
 
         recs=dict()
 
@@ -97,14 +108,14 @@ class MACD(Strategy):
 
         # first = self.nfast
         # init_asset = 1000
-        long = recs['hist'] > 0
+        long = recs['hist'].values > 0
 
         flags = np.logical_xor(long[1:], long[:-1])
 
         if np.bincount(flags)[1] % 2 == 1:
             flags[-1] = not flags[-1]
 
-        recs['trade_flag']=flags
+        # recs['trade_flag']=flags
         # recs.at[recs.index[0], 'trade_flag']=False
 
         # change last flag, if long position, sell it.
@@ -116,7 +127,8 @@ class MACD(Strategy):
 
 
         # trade_date = p.date[first:][trades]
-        trade_price = recs['price'][1:][recs['trade_flag']]
+        # assert len(recs['price'][1:]) == len(flags)
+        trade_price = recs['price'][1:].values[flags]
         # trade_price.name='price'
 
         # trade_count = len(trade_price)

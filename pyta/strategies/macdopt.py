@@ -23,8 +23,10 @@ from utils.common import rec2csv
 logger = logging.getLogger(__name__)
 
 def opt(products):
+    import time
     from datetime import datetime as dt
-    print('Start at %s' % dt.now())
+    time_start=time.time()
+    # print('Start at %s'%time_start)
     recs=[]
     calculations=0
     model = MACD()
@@ -38,8 +40,11 @@ def opt(products):
     recs = fromrecords(recs, names=['code', 'revenue', 'nfast', 'nslow', 'nmacd'])
     rec2csv(recs, path.join(CONFIG['out_p'],'opt.csv'), mode='a', with_header=True)
 
-    print('End at %s' % dt.now())
-    print('Total %s macd combinations computed.' % calculations)
+    time_end=time.time()
+    pst=time_end - time_start
+    # print('End at %s' % time_end)
+    print('Total %s para combinations computed, roughly %.3f seconds, %.3f ms per calc.' % (
+                calculations, pst, pst/calculations*1000))
 
 
 def opt_single(model):
