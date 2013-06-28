@@ -89,7 +89,7 @@ class MACD(Strategy):
 
 
         recs['price']=prices
-        recs=pd.DataFrame(recs)
+        # recs=pd.DataFrame(recs)
         # self.recs.to_csv('before_jop.csv')
         # recs = self.recs.dropna()
         # self.recs = fromarrays(self.result, names=['date', 'mafast', 'maslow', 'macd', 'signal', 'hist'])
@@ -105,7 +105,7 @@ class MACD(Strategy):
             flags[-1] = not flags[-1]
 
         recs['trade_flag']=flags
-        recs.at[recs.index[0], 'trade_flag']=False
+        # recs.at[recs.index[0], 'trade_flag']=False
 
         # change last flag, if long position, sell it.
         # if recs['trade_flag'].value_counts().loc[True] % 2 == 1:
@@ -116,7 +116,7 @@ class MACD(Strategy):
 
 
         # trade_date = p.date[first:][trades]
-        trade_price = recs['price'][recs['trade_flag']]
+        trade_price = recs['price'][1:][recs['trade_flag']]
         # trade_price.name='price'
 
         # trade_count = len(trade_price)
@@ -325,7 +325,7 @@ if __name__ == '__main__':
     # # print(products[-1].summary())
 
 
-    mymacd = MACD(12, 26, 9, verbose=True)
+    mymacd = MACD(12, 26, 9, verbose=False)
 
     code='GOOG'
     product = DataReader(code, 'yahoo', start=date_from, end=date_to)

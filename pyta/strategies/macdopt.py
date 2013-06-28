@@ -22,26 +22,47 @@ from utils.common import rec2csv
 
 logger = logging.getLogger(__name__)
 
-def opt(p):
-    if len(p) < 200:
-        logger.warning('CODE %s has only %d records, not enough.', p.code, len(p))
-        return
+def opt(products):
+    from datetime import datetime as dt
+    print('Start at %s' % dt.now())
+    recs=[]
+    calculations=0
     model = MACD()
+
+    for product in products:
+        model.product=product
+        cals, rec = opt_single(model)
+        recs += rec
+        calculations += cals
+
+    recs = fromrecords(recs, names=['code', 'revenue', 'nfast', 'nslow', 'nmacd'])
+    rec2csv(recs, path.join(CONFIG['out_p'],'opt.csv'), mode='a', with_header=True)
+
+    print('End at %s' % dt.now())
+    print('Total %s macd combinations computed.' % calculations)
+
+
+def opt_single(model):
+    # if len(p) < 200:
+    #     logger.warning('CODE %s has only %d records, not enough.', p.code, len(p))
+    #     return
+    cals = 0
+
     recs = []
-    model.product=p
+
     for nfast in range(6, 24):
         #logger.info('Start CODE=%s, nfast=%d', model.products[0].code, nfast)
         for nslow in range(nfast+5, 31):
             for nmacd in range(6, 15):
+                cals += 1
                 model.nfast=nfast
                 model.nslow=nslow
                 model.nmacd=nmacd
                 model.analyze()
-                # model.summary()
                 recs.append((model.product.code, model.revenue, nfast, nslow, nmacd))
 
-    recs = fromrecords(recs, names=['code', 'revenue', 'nfast', 'nslow', 'nmacd'])
-    rec2csv(recs, path.join(CONFIG['out_p'],'opt.csv'), mode='w', with_header=True)
+    return cals, recs
+
 
 def main():
     period = 'd'
@@ -77,7 +98,7 @@ def demo():
     date_to = '2013-01-01'
     product = DataReader(code, 'yahoo', start=date_from, end=date_to)
     product.code = code
-    opt(product)
+    opt([product])
 
 def democsv():
     from utils.config import CONFIG
@@ -85,7 +106,7 @@ def democsv():
     histf=join(CONFIG['temp_p'], 'AAPL.csv')
     product = pd.read_csv(histf, index_col=0)
     product.code='aapl'
-    opt(product)
+    opt([product])
 
 
 if __name__ == '__main__':
