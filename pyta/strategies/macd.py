@@ -268,7 +268,9 @@ class MACD(Strategy):
         # self.plot()
 
     def __call__(self, *args, **kwargs):
-        self.apply()
+        self.__dict__.update(kwargs)
+        self.analyze()
+        return self.revenue
 
 
 if __name__ == '__main__':

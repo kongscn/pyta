@@ -25,14 +25,11 @@ logger = logging.getLogger(__name__)
 def opt(products):
     time_start = time.time()
     recs = []
-    calculations = 0
     model = MACD()
 
     for product in products:
         model.product = product
-        cals, rec = opt_single(model)
-        recs += rec
-        calculations += cals
+        recs += opt_single(model)
 
     time_end = time.time()
     recs = fromrecords(recs, names=['code', 'revenue',
@@ -43,25 +40,22 @@ def opt(products):
 
     print(('Total %s para combinations computed,'
            'roughly %.3f seconds, %.3f ms per calc.') % (
-              calculations, pst, pst / calculations * 1000))
+              len(recs), pst, pst / len(recs) * 1000))
 
 
 def opt_single(model):
-    cals = 0
     recs = []
 
     for nfast in range(6, 24):
         for nslow in range(nfast + 5, 31):
             for nmacd in range(6, 15):
-                cals += 1
                 model.nfast = nfast
                 model.nslow = nslow
                 model.nmacd = nmacd
                 model.analyze()
                 recs.append((model.product.code, model.revenue,
                              nfast, nslow, nmacd))
-
-    return cals, recs
+    return recs
 
 
 def main():
