@@ -32,8 +32,8 @@ def opt(products):
         recs += opt_single(model)
 
     time_end = time.time()
-    recs = fromrecords(recs, names=['code', 'revenue',
-                                    'nfast', 'nslow', 'nmacd'])
+    recs = fromrecords(recs, names=['code', 'nfast',
+                                    'nslow', 'nmacd', 'revenue'])
     rec2csv(recs, join(CONFIG['out_p'], 'opt.csv'))
 
     pst = time_end - time_start
@@ -41,6 +41,8 @@ def opt(products):
     print(('Total %s para combinations computed,'
            'roughly %.3f seconds, %.3f ms per calc.') % (
               len(recs), pst, pst / len(recs) * 1000))
+
+    return recs
 
 
 def opt_single(model):
@@ -53,8 +55,8 @@ def opt_single(model):
                 model.nslow = nslow
                 model.nmacd = nmacd
                 model.analyze()
-                recs.append((model.product.code, model.revenue,
-                             nfast, nslow, nmacd))
+                recs.append((model.product.code, nfast,
+                             nslow, nmacd, model.revenue))
     return recs
 
 
