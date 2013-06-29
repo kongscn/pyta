@@ -14,12 +14,16 @@ fh.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 
-fmt = '%(asctime)s|%(levelname)-8s|%(name)s|%(message)s'
+fmt = '%(asctime)s %(levelname)-7s %(name)s %(message)s'
 dtfmt = '%Y-%m-%d %H:%M:%S'
 formatter = logging.Formatter(fmt, dtfmt)
 
+fmt='%(asctime)s %(levelname)-7s %(message)s'
+dtfmt =  '%H:%M:%S'
+formatter_simple = logging.Formatter(fmt, dtfmt)
+
 fh.setFormatter(formatter)
-ch.setFormatter(formatter)
+ch.setFormatter(formatter_simple)
 
 logger.addHandler(fh)
 logger.addHandler(ch)
