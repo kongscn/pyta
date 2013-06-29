@@ -78,14 +78,15 @@ class MACD(Strategy):
     def analyze(self):
         init_asset = 1000
         prices = self.prices
-        recs = {}
 
-        recs['ma_fast'] = pd.ewma(prices, span=self.nfast)
-        recs['ma_slow'] = pd.ewma(prices, span=self.nslow)
+        recs = {'price': prices,
+                'ma_fast': pd.ewma(prices, span=self.nfast),
+                'ma_slow': pd.ewma(prices, span=self.nslow),
+                }
+
         recs['macd'] = recs['ma_fast'] - recs['ma_slow']
         recs['signal'] = pd.ewma(recs['macd'], span=self.nmacd)
         recs['hist'] = recs['macd'] - recs['signal']
-        recs['price'] = prices
 
         long = recs['hist'] > 0
         flags = long[1:] ^ long[:-1]
