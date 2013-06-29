@@ -17,7 +17,7 @@ import numpy as np
 # import matplotlib.pyplot as plt
 # import matplotlib.font_manager as font_manager
 
-import utils.log
+
 from utils.config import CONFIG
 from strategies.strategy import Strategy
 
@@ -74,6 +74,7 @@ class MACD(Strategy):
         self._product = p
         self.prices = p[self.column].values
         self.date_idx = p.index
+        self.p_code = p.code
 
     def analyze(self):
         init_asset = 1000
@@ -99,18 +100,23 @@ class MACD(Strategy):
         self.trade_count = len(trade_price)
 
         if self.verbose:
-            analysis_file = join(CONFIG['out_p'], 'analysis.csv')
-            trans_file = join(CONFIG['out_p'], 'trans.csv')
+            analysis_file = join(CONFIG['out_p'],
+                                 self.p_code + '_analysis.csv')
+            trans_file = join(CONFIG['out_p'],
+                              self.p_code + '_trans.csv')
 
             recs = pd.DataFrame(recs, index=self.date_idx)
             recs['long'] = long
             recs['trade_flag'] = np.insert(flags, 0, False)
             recs.to_csv(analysis_file)
 
-            trade_price = pd.Series(
-                prices[1:][flags], index=self.date_idx[1:][flags])
-            trade_price.name = 'price'
-            trades = pd.DataFrame(trade_price)
+            # trade_price = pd.Series(
+            #     prices[1:][flags], index=self.date_idx[1:][flags])
+            # trade_price.name = 'price'
+            trade_price = prices[1:][flags]
+            trades = pd.DataFrame(trade_price,
+                                  index=self.date_idx[1:][flags],
+                                  columns=['price'])
             trades['action'] = 'buy'
             trades['action'][1::2] = 'sell'
             trades.to_csv(trans_file)
@@ -275,6 +281,7 @@ class MACD(Strategy):
 
 
 if __name__ == '__main__':
+    import utils.log
     from pandas.io.data import DataReader
 
     date_from = '2003-01-01'

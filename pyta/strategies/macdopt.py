@@ -28,6 +28,7 @@ def opt(products):
     model = MACD()
 
     for product in products:
+        logger.info('Start analysis of %s', product.code)
         model.product = product
         recs += opt_single(model)
 
@@ -38,9 +39,9 @@ def opt(products):
 
     pst = time_end - time_start
 
-    print(('Total %s para combinations computed,'
-           'roughly %.3f seconds, %.3f ms per calc.') % (
-              len(recs), pst, pst / len(recs) * 1000))
+    logger.info(('Total %s para combinations computed, '
+           'roughly %.3f seconds, %.3f ms per calc.'),
+              len(recs), pst, pst / len(recs) * 1000)
 
     return recs
 
@@ -69,20 +70,25 @@ def main():
     #        ORDER BY p.id''')()
 
     product_codes = get_components_yahoo('^DJI').index
+    total = len(product_codes)
     cur = 0
-    all = len(product_codes)
-    logger.info('Start main loop consist of %d products.', len(product_codes))
+    products=[]
 
+    logger.info('Start downloading of %d products.', len(product_codes))
     for code in product_codes:
         cur += 1
-        logger.info('(%d/%d) %s started.', cur, all, code)
-
-        product = DataReader(code, 'yahoo', start=date_from, end=date_to)
+        try:
+            product = DataReader(code, 'yahoo', start=date_from, end=date_to)
+        except:
+            logger.warn('(%d/%d) Fail downloading %s.', cur, total, code)
+            continue
 
         product.code = code
+        products.append(product)
+        logger.info('(%d/%d) Downloaded %s.', cur, total, code)
 
-        opt(product)
-
+    logger.info('Download complete.')
+    return opt(products)
 
 def demo():
 
@@ -102,15 +108,14 @@ def democsv():
 
 
 if __name__ == '__main__':
-
+    import utils.log
     period = 'd'
     code = 'AAPL'
     date_from = '2003-01-01'
     date_to = '2013-01-01'
 
-    # main()
+    # from timeit import Timer
+    # t = Timer("demo()", "from __main__ import demo")
+    # print(t.repeat(repeat=1, number=1))
 
-    from timeit import Timer
-
-    t = Timer("demo()", "from __main__ import demo")
-    print(t.repeat(repeat=1, number=1))
+    recs = main()
