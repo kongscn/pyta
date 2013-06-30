@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-'''
 
 '''
 
+'''
+from __future__ import print_function, division
 __author__ = 'kongs'
 # TODO: add method to store result.
 
@@ -119,3 +120,4 @@ if __name__ == '__main__':
     # print(t.repeat(repeat=1, number=1))
 
     recs = main()
+    # demo()

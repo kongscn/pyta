@@ -2,16 +2,17 @@
 __author__ = 'kongs'
 
 import os
-import os.path as path
 
 CONFIG = dict()
 
-proj_p = path.dirname(path.dirname(path.realpath(__file__)))
+current_p = os.path.dirname(os.path.realpath(__file__))
+proj_p = os.path.dirname(current_p)
 CONFIG['base_p'] = proj_p
-CONFIG['log_p'] = path.join(proj_p, 'log')
-CONFIG['out_p'] = path.join(proj_p, 'out')
-CONFIG['data_p'] = path.join(proj_p, 'data')
-CONFIG['temp_p'] = path.join(proj_p, 'temp')
+CONFIG['log_p'] = os.path.join(proj_p, 'log')
+CONFIG['out_p'] = os.path.join(proj_p, 'out')
+CONFIG['data_p'] = os.path.join(proj_p, 'data')
+CONFIG['temp_p'] = os.path.join(proj_p, 'temp')
 
 for key in CONFIG.keys():
-    os.makedirs(CONFIG[key], exist_ok=True)
+    if not os.access(CONFIG[key], os.F_OK):
+        os.makedirs(CONFIG[key])

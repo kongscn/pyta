@@ -17,7 +17,6 @@ import numpy as np
 # import matplotlib.pyplot as plt
 # import matplotlib.font_manager as font_manager
 
-
 from utils.config import CONFIG
 from strategies.strategy import Strategy
 
@@ -116,9 +115,10 @@ class MACD(Strategy):
             trade_price = prices[1:][flags]
             trades = pd.DataFrame(trade_price,
                                   index=self.date_idx[1:][flags],
-                                  columns=['price'])
-            trades['action'] = 'buy'
-            trades['action'][1::2] = 'sell'
+                                  columns=['Price'])
+            trades.index.name='Date'
+            trades['Action'] = 'buy'
+            trades['Action'][1::2] = 'sell'
             trades.to_csv(trans_file)
 
     def summary(self):
