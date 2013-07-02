@@ -15,9 +15,9 @@ from numpy.core.records import fromrecords
 import pandas as pd
 from pandas.io.data import DataReader, get_components_yahoo
 
-from utils.config import CONFIG
+from util.config import CONFIG
 from strategies.macd import MACD
-from utils.common import rec2csv
+from util.common import rec2csv
 
 
 logger = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ def demo():
 
 
 def democsv():
-    from utils.config import CONFIG
+    from util.config import CONFIG
     from os.path import join
 
     histf = join(CONFIG['temp_p'], 'AAPL.csv')
@@ -109,7 +109,7 @@ def democsv():
 
 
 if __name__ == '__main__':
-    import utils.log
+    import util.log
     period = 'd'
     code = 'AAPL'
     date_from = '2003-01-01'

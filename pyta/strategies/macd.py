@@ -17,7 +17,7 @@ import numpy as np
 # import matplotlib.pyplot as plt
 # import matplotlib.font_manager as font_manager
 
-from utils.config import CONFIG
+from util.config import CONFIG
 from strategies.strategy import Strategy
 
 logger = logging.getLogger(__name__)
@@ -281,7 +281,7 @@ class MACD(Strategy):
 
 
 if __name__ == '__main__':
-    import utils.log
+    import util.log
     from pandas.io.data import DataReader
 
     date_from = '2003-01-01'

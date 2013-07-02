@@ -3,7 +3,7 @@ __author__ = 'kongs'
 
 import logging
 import os.path as path
-from utils.config import CONFIG
+from util.config import CONFIG
 
 logger = logging.getLogger('')
 logger.setLevel(logging.INFO)

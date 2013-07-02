@@ -2,7 +2,7 @@ __author__ = 'kongs'
 
 from pandas.io.data import DataReader
 
-from utils.datasource import DataSource
+from util.datasource import DataSource
 
 class OnlineDS(DataSource):
     def __init__(self, provider='yahoo',
